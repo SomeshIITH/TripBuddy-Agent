@@ -1,9 +1,10 @@
-import os
-from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-load_dotenv()
+import os
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(), override=True)
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 AVIATION_STACK_API_KEY = os.getenv("AVIATION_STACK_API_KEY")

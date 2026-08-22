@@ -2,6 +2,11 @@ from typing import Annotated, Any, TypedDict
 import operator
 from langchain_core.messages import AnyMessage
 
+from dotenv import find_dotenv, load_dotenv
+
+# Load environment variables before initializing the LLM
+load_dotenv(find_dotenv(), override=True)
+
 class TravelState(TypedDict, total=False):
     messages: Annotated[list[AnyMessage], operator.add]
     user_id: str

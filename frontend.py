@@ -6,6 +6,10 @@ from langgraph.types import Command
 
 from graph import app
 
+# 1. Load env vars FIRST
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv(), override=True)
+
 
 st.set_page_config(page_title="Real-World Multi-Agent Travel Planner", layout="wide")
 

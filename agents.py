@@ -10,6 +10,12 @@ from config import get_llm
 from mcp_client import current_weather, forecast, list_airlines, list_airports, tavily_search
 from state import TravelState
 
+
+from dotenv import find_dotenv, load_dotenv
+
+# Load environment variables before initializing the LLM
+load_dotenv(find_dotenv(), override=True)
+
 llm = get_llm()
 
 def _llm_text(system: str, prompt: str) -> str:

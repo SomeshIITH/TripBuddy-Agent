@@ -1,7 +1,6 @@
 import os
 import asyncio
 
-from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -11,7 +10,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 # ENVIRONMENT
 # ============================================================
 
-load_dotenv(override=True)
+from dotenv import find_dotenv, load_dotenv
+
+# Load environment variables before initializing the LLM
+load_dotenv(find_dotenv(), override=True)
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 AVIATION_STACK_API_KEY = os.getenv("AVIATION_STACK_API_KEY")

@@ -23,7 +23,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # LLM
 llm = ChatGroq(
-    model="llama-3.3-70b-versatile"
+    model="meta-llama/llama-prompt-guard-2-22m"
 )
 
 # State
@@ -60,20 +60,42 @@ def hotel_agent(state: TravelState):
         "llm_calls": state.get("llm_calls", 0) + 1
     }
 
+
+def truncate_text(text, max_chars=12000):
+    text = str(text)
+
+    if len(text) > max_chars:
+        return text[:max_chars] + "\n...[truncated]..."
+
+    return text
+
 # Itinerary Agent
 def itinerary_agent(state: TravelState):
+    
+    flight_results = truncate_text(
+        state["flight_results"],
+        12000
+    )
+
+    hotel_results = truncate_text(
+        state["hotel_results"],
+        12000
+    )
 
     prompt = f"""
-    Create a travel itinerary.
-    User Query:
-    {state['user_query']}
+        Create a travel itinerary.
 
-    Flight Results:
-    {state['flight_results']}
+        User Query:
+        {state['user_query']}
 
-    Hotel Results:
-    {state['hotel_results']}
+        Flight Results:
+        {flight_results}
+
+        Hotel Results:
+        {hotel_results}
+        Create a concise but useful itinerary.
     """
+
 
     response = llm.invoke([
         SystemMessage(
@@ -129,7 +151,10 @@ graph.add_edge("final_agent", END)
 
 
 # Persistent connection so both CLI and Streamlit can share the compiled app
-_conn = psycopg.connect(DATABASE_URL)
+_conn = psycopg.connect(
+    DATABASE_URL,
+    autocommit=True
+)
 checkpointer = PostgresSaver(_conn)
 checkpointer.setup()
 

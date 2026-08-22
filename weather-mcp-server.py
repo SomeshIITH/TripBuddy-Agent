@@ -1,5 +1,6 @@
 # pip install mcp requests
 
+
 from mcp.server.fastmcp import FastMCP
 import requests
 import os
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 mcp = FastMCP("Weather Server")
+
 
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
@@ -39,49 +41,12 @@ def get_current_weather(city: str):
     }
 
 
-
-# @mcp.tool()
-# def get_forecast(city: str):
-
-#     url = (
-#         "https://api.openweathermap.org/data/2.5/forecast"
-#     )
-
-#     params = {
-#         "q": city,
-#         "appid": OPENWEATHER_API_KEY,
-#         "units": "metric"
-#     }
-
-#     response = requests.get(
-#         url,
-#         params=params
-#     )
-
-#     data = response.json()
-
-#     forecast = []
-
-#     # Return first 5 forecast entries
-#     for item in data["list"][:5]:
-
-#         forecast.append(
-#             {
-#                 "datetime": item["dt_txt"],
-#                 "temperature": item["main"]["temp"],
-#                 "weather": item["weather"][0]["description"]
-#             }
-#         )
-
-#     return {
-#         "city": city,
-#         "forecast": forecast
-#     }
-
 @mcp.tool()
 def get_forecast(city: str):
 
-    url = "https://api.openweathermap.org/data/2.5/forecast"
+    url = (
+        "https://api.openweathermap.org/data/2.5/forecast"
+    )
 
     params = {
         "q": city,
@@ -91,43 +56,29 @@ def get_forecast(city: str):
 
     response = requests.get(
         url,
-        params=params,
-        timeout=10
+        params=params
     )
 
     data = response.json()
 
-    # Check API response first
-    if response.status_code != 200:
-        return {
-            "error": True,
-            "status_code": response.status_code,
-            "message": data.get("message", "Weather API request failed"),
-            "city": city
-        }
-
-    # Make sure forecast data exists
-    if "list" not in data:
-        return {
-            "error": True,
-            "message": "Forecast data not found in OpenWeather response",
-            "city": city,
-            "response": data
-        }
-
     forecast = []
 
+    # Return first 5 forecast entries
     for item in data["list"][:5]:
-        forecast.append({
-            "datetime": item["dt_txt"],
-            "temperature": item["main"]["temp"],
-            "weather": item["weather"][0]["description"]
-        })
+
+        forecast.append(
+            {
+                "datetime": item["dt_txt"],
+                "temperature": item["main"]["temp"],
+                "weather": item["weather"][0]["description"]
+            }
+        )
 
     return {
         "city": city,
         "forecast": forecast
     }
+
 
 
 

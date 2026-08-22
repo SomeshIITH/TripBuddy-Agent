@@ -82,7 +82,7 @@ def build_graph():
     graph.add_edge("final_response", END)
 
     if DATABASE_URL:
-        conn = psycopg.connect(DATABASE_URL)
+        conn = psycopg.connect(DATABASE_URL,autocommit=True)
         checkpointer = PostgresSaver(conn)
         checkpointer.setup()
         return graph.compile(checkpointer=checkpointer)
